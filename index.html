@@ -51,11 +51,11 @@
     </style>
 </head>
 <body>
-    <form id="form-product">
+    <form id="form-animal">
         <h1>FORMULARIO ZOOLOGICO</h1>
         <input type="text" id="nombre" placeholder="Ingrese el nombre del animal">
         <input type="text" id="especie" placeholder="Ingrese la especie del animal">
-        <input type="text" id="edad" placeholder="Ingrese la edad del animal">
+        <input type="text" id="edad" placeholder="Ingrese la edad minima de vida del animal">
         <input type="text" id="habitat" placeholder="Ingrese el hábitat del animal">
         <input type="text" id="dieta" placeholder="Ingrese la dieta del animal">
         <input type="text" id="comportamiento" placeholder="Ingrese el comportamiento del animal">
@@ -69,6 +69,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
       
@@ -84,6 +85,25 @@
       
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const animalform = document.getElementById("form-animal");
+        animalform.addEventListener("submit",async(e)=>{
+            e.preventDefault();
+            await addDoc(collection(db, "animales"), {
+            nombre: animalform.nombre.value,
+            especie: animalform.especie.value,
+            edad: animalform.edad.value,
+            habitat: animalform.habitat.value,
+            dieta: animalform.dieta.value,
+            comportamiento: animalform.comportamiento.value,
+            altura: animalform.altura.value,
+            peso: animalform.peso.value,
+            color: animalform.color.value,
+            fecha_ingreso: animalform.fecha_ingreso.value
+            });
+            productform,reset();
+        });
       </script>
 
 
