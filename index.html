@@ -60,6 +60,37 @@
             padding: 10px;
             text-align: left;
         }
+        #modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        #modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -91,6 +122,7 @@
                 <th>Peso</th>
                 <th>Color</th>
                 <th>Fecha de Ingreso</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -98,12 +130,19 @@
         </tbody>
     </table>
 
+    <!-- Modal para mostrar detalles del animal -->
+    <div id="modal">
+        <div id="modal-content">
+            <span class="close">&times;</span>
+            <h2>Detalles del Animal</h2>
+            <p id="animal-details"></p>
+        </div>
+    </div>
+
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
             authDomain: "zoologico-ea4c2.firebaseapp.com",
@@ -113,14 +152,16 @@
             appId: "1:630353554308:web:bb56e670fc00b386344bd1"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         const animalform = document.getElementById("form-animal");
         const animalTableBody = document.getElementById("animal-table").getElementsByTagName("tbody")[0];
+        const modal = document.getElementById("modal");
+        const modalContent = document.getElementById("modal-content");
+        const span = document.getElementsByClassName("close")[0];
+        const animalDetails = document.getElementById("animal-details");
 
-        // Cargar los datos existentes al cargar la página
         window.addEventListener('DOMContentLoaded', async () => {
             const querySnapshot = await getDocs(collection(db, "animales"));
             querySnapshot.forEach((doc) => {
@@ -162,6 +203,7 @@
             const cellPeso = row.insertCell(7);
             const cellColor = row.insertCell(8);
             const cellFechaIngreso = row.insertCell(9);
+            const cellAcciones = row.insertCell(10);
 
             cellNombre.textContent = animal.nombre;
             cellEspecie.textContent = animal.especie;
@@ -173,6 +215,37 @@
             cellPeso.textContent = animal.peso;
             cellColor.textContent = animal.color;
             cellFechaIngreso.textContent = animal.fecha_ingreso;
+
+            const verButton = document.createElement("button");
+            verButton.textContent = "Ver";
+            verButton.addEventListener("click", () => showAnimalDetails(animal));
+            cellAcciones.appendChild(verButton);
+        }
+
+        function showAnimalDetails(animal) {
+            animalDetails.innerHTML = `
+                <strong>Nombre:</strong> ${animal.nombre}<br>
+                <strong>Especie:</strong> ${animal.especie}<br>
+                <strong>Edad:</strong> ${animal.edad}<br>
+                <strong>Hábitat:</strong> ${animal.habitat}<br>
+                <strong>Dieta:</strong> ${animal.dieta}<br>
+                <strong>Comportamiento:</strong> ${animal.comportamiento}<br>
+                <strong>Altura:</strong> ${animal.altura}<br>
+                <strong>Peso:</strong> ${animal.peso}<br>
+                <strong>Color:</strong> ${animal.color}<br>
+                <strong>Fecha de Ingreso:</strong> ${animal.fecha_ingreso}
+            `;
+            modal.style.display = "block";
+        }
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </body>
