@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             margin: 0;
@@ -20,6 +20,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
+            margin-bottom: 20px;
         }
         #form-animal h1 {
             text-align: center;
@@ -48,6 +49,29 @@
         #form-animal button:hover {
             background-color: #45a049;
         }
+        .animal-list {
+            width: 80%;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .animal-item {
+            padding: 10px;
+            border-bottom: 1px solid #cccccc;
+        }
+        .animal-item:last-child {
+            border-bottom: none;
+        }
+        .edit, .delete {
+            margin-left: 10px;
+            cursor: pointer;
+            color: #4CAF50;
+        }
+        .delete {
+            color: #f44336;
+        }
     </style>
 </head>
 <body>
@@ -59,19 +83,21 @@
         <input type="text" id="habitat" placeholder="Ingrese el hábitat del animal">
         <input type="text" id="dieta" placeholder="Ingrese la dieta del animal">
         <input type="text" id="comportamiento" placeholder="Ingrese el comportamiento del animal">
-        <input type="text" id="altura" placeholder="Ingrese la altura del animal en m">
-        <input type="text" id="peso" placeholder="Ingrese el peso del animal en kg">
+        <input type="text" id="altura" placeholder="Ingrese la altura del animal">
+        <input type="text" id="peso" placeholder="Ingrese el peso del animal">
         <input type="text" id="color" placeholder="Ingrese el color del animal">
-        <input type="text" id="fecha_ingreso" placeholder="Ingresar la fecha de ingreso al zoologico">    
+        <input type="text" id="fecha_ingreso" placeholder="Ingresar el código del producto">    
         <button type="submit">Agregar</button>
     </form>
+    
+    <div class="animal-list" id="animal-list">
+        <!-- Lista de animales -->
+    </div>
 
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
             authDomain: "zoologico-ea4c2.firebaseapp.com",
@@ -81,14 +107,16 @@
             appId: "1:630353554308:web:bb56e670fc00b386344bd1"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         const animalform = document.getElementById("form-animal");
+        const animalList = document.getElementById("animal-list");
+
+        // Función para agregar animal
         animalform.addEventListener("submit", async (e) => {
             e.preventDefault();
-            await addDoc(collection(db, "animales"), {
+            const animalData = {
                 nombre: animalform.nombre.value,
                 especie: animalform.especie.value,
                 edad: animalform.edad.value,
@@ -99,8 +127,115 @@
                 peso: animalform.peso.value,
                 color: animalform.color.value,
                 fecha_ingreso: animalform.fecha_ingreso.value
-            });
+            };
+            await addDoc(collection(db, "animales"), animalData);
             animalform.reset();
+        });
+
+        // Función para renderizar la lista de animales
+        const renderAnimalList = (docs) => {
+            animalList.innerHTML = "";
+            docs.forEach(doc => {
+                const animal = doc.data();
+                animalList.innerHTML += `
+                    <div class="animal-item" data-id="${doc.id}">
+                        <span><strong>Nombre:</strong> ${animal.nombre}</span><br>
+                        <span><strong>Especie:</strong> ${animal.especie}</span><br>
+                        <span><strong>Edad:</strong> ${animal.edad}</span><br>
+                        <span><strong>Hábitat:</strong> ${animal.habitat}</span><br>
+                        <span><strong>Dieta:</strong> ${animal.dieta}</span><br>
+                        <span><strong>Comportamiento:</strong> ${animal.comportamiento}</span><br>
+                        <span><strong>Altura:</strong> ${animal.altura}</span><br>
+                        <span><strong>Peso:</strong> ${animal.peso}</span><br>
+                        <span><strong>Color:</strong> ${animal.color}</span><br>
+                        <span><strong>Código:</strong> ${animal.fecha_ingreso}</span><br>
+                        <span class="edit">Editar</span>
+                        <span class="delete">Eliminar</span>
+                    </div>
+                `;
+            });
+
+            // Añadir eventos a los botones de editar y eliminar
+            const editButtons = document.querySelectorAll(".edit");
+            const deleteButtons = document.querySelectorAll(".delete");
+
+            editButtons.forEach(button => {
+                button.addEventListener("click", (e) => {
+                    const id = e.target.parentElement.getAttribute("data-id");
+                    editAnimal(id);
+                });
+            });
+
+            deleteButtons.forEach(button => {
+                button.addEventListener("click", async (e) => {
+                    const id = e.target.parentElement.getAttribute("data-id");
+                    await deleteDoc(doc(db, "animales", id));
+                });
+            });
+        };
+
+        // Función para editar un animal
+        const editAnimal = async (id) => {
+            const animalRef = doc(db, "animales", id);
+            const animalDoc = await animalRef.get();
+            if (animalDoc.exists) {
+                const animal = animalDoc.data();
+                animalform.nombre.value = animal.nombre;
+                animalform.especie.value = animal.especie;
+                animalform.edad.value = animal.edad;
+                animalform.habitat.value = animal.habitat;
+                animalform.dieta.value = animal.dieta;
+                animalform.comportamiento.value = animal.comportamiento;
+                animalform.altura.value = animal.altura;
+                animalform.peso.value = animal.peso;
+                animalform.color.value = animal.color;
+                animalform.fecha_ingreso.value = animal.fecha_ingreso;
+
+                animalform.removeEventListener("submit", submitForm);
+
+                animalform.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    await updateDoc(animalRef, {
+                        nombre: animalform.nombre.value,
+                        especie: animalform.especie.value,
+                        edad: animalform.edad.value,
+                        habitat: animalform.habitat.value,
+                        dieta: animalform.dieta.value,
+                        comportamiento: animalform.comportamiento.value,
+                        altura: animalform.altura.value,
+                        peso: animalform.peso.value,
+                        color: animalform.color.value,
+                        fecha_ingreso: animalform.fecha_ingreso.value
+                    });
+                    animalform.reset();
+                    animalform.addEventListener("submit", submitForm);
+                });
+            }
+        };
+
+        const submitForm = async (e) => {
+            e.preventDefault();
+            const animalData = {
+                nombre: animalform.nombre.value,
+                especie: animalform.especie.value,
+                edad: animalform.edad.value,
+                habitat: animalform.habitat.value,
+                dieta: animalform.dieta.value,
+                comportamiento: animalform.comportamiento.value,
+                altura: animalform.altura.value,
+                peso: animalform.peso.value,
+                color: animalform.color.value,
+                fecha_ingreso: animalform.fecha_ingreso.value
+            };
+            await addDoc(collection(db, "animales"), animalData);
+            animalform.reset();
+        };
+
+        animalform.addEventListener("submit", submitForm);
+
+        // Función para obtener y mostrar los animales en tiempo real
+        onSnapshot(collection(db, "animales"), (snapshot) => {
+            renderAnimalList(snapshot.docs);
         });
     </script>
 </body>
