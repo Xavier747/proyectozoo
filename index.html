@@ -101,7 +101,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
@@ -121,7 +121,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             const querySnapshot = await getDocs(collection(db, "animales"));
             querySnapshot.forEach((doc) => {
-                addAnimalToTable(doc.data());
+                addAnimalToTable(doc.id, doc.data());
             });
         });
 
@@ -141,12 +141,12 @@
                 fecha_ingreso: animalform.fecha_ingreso.value
             };
 
-            await addDoc(collection(db, "animales"), newAnimal);
-            addAnimalToTable(newAnimal);
+            const docRef = await addDoc(collection(db, "animales"), newAnimal);
+            addAnimalToTable(docRef.id, newAnimal);
             animalform.reset();
         });
 
-        function addAnimalToTable(animal) {
+        function addAnimalToTable(id, animal) {
             const row = animalTableBody.insertRow();
 
             const cellNombre = row.insertCell(0);
@@ -176,6 +176,11 @@
             verButton.textContent = "Ver";
             verButton.addEventListener("click", () => showAnimalDetails(animal));
             cellAcciones.appendChild(verButton);
+
+            const eliminarButton = document.createElement("button");
+            eliminarButton.textContent = "Eliminar";
+            eliminarButton.addEventListener("click", () => deleteAnimal(id, row));
+            cellAcciones.appendChild(eliminarButton);
         }
 
         function showAnimalDetails(animal) {
@@ -189,6 +194,13 @@
             animalform.peso.value = animal.peso;
             animalform.color.value = animal.color;
             animalform.fecha_ingreso.value = animal.fecha_ingreso;
+        }
+
+        async function deleteAnimal(id, row) {
+            if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+                await deleteDoc(doc(db, "animales", id));
+                row.remove();
+            }
         }
     </script>
 </body>
