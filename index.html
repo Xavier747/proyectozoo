@@ -74,7 +74,7 @@
         <input type="text" id="altura" placeholder="Ingrese la altura del animal">
         <input type="text" id="peso" placeholder="Ingrese el peso del animal">
         <input type="text" id="color" placeholder="Ingrese el color del animal">
-        <input type="text" id="fecha_ingreso" placeholder="Ingresar el código del producto">    
+        <input type="text" id="fecha_ingreso" placeholder="Ingrese la fecha de ingreso del animal">    
         <button type="submit">Agregar</button>
     </form>
 
@@ -101,7 +101,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -119,6 +119,14 @@
 
         const animalform = document.getElementById("form-animal");
         const animalTableBody = document.getElementById("animal-table").getElementsByTagName("tbody")[0];
+
+        // Cargar los datos existentes al cargar la página
+        window.addEventListener('DOMContentLoaded', async () => {
+            const querySnapshot = await getDocs(collection(db, "animales"));
+            querySnapshot.forEach((doc) => {
+                addAnimalToTable(doc.data());
+            });
+        });
 
         animalform.addEventListener("submit", async (e) => {
             e.preventDefault();
