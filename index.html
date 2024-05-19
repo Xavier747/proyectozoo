@@ -26,7 +26,7 @@
             text-align: center;
             color: #333333;
         }
-        #form-animal input[type="text"] {
+        #form-animal input[type="text"], #form-animal input[type="hidden"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin: 10px 0;
@@ -60,11 +60,26 @@
             padding: 10px;
             text-align: left;
         }
+        .edit-button, .delete-button {
+            cursor: pointer;
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+        }
+        .edit-button {
+            background-color: #FFA500;
+        }
+        .delete-button {
+            background-color: #FF0000;
+        }
     </style>
 </head>
 <body>
     <form id="form-animal">
         <h1>FORMULARIO ZOOLÓGICO</h1>
+        <input type="hidden" id="id">
         <input type="text" id="nombre" placeholder="Ingrese el nombre del animal">
         <input type="text" id="especie" placeholder="Ingrese la especie del animal">
         <input type="text" id="edad" placeholder="Ingrese la edad mínima de vida del animal">
@@ -91,6 +106,7 @@
                 <th>Peso</th>
                 <th>Color</th>
                 <th>Fecha de Ingreso</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -101,56 +117,65 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
-            authDomain: "zoologico-ea4c2.firebaseapp.com",
-            projectId: "zoologico-ea4c2",
-            storageBucket: "zoologico-ea4c2.appspot.com",
-            messagingSenderId: "630353554308",
-            appId: "1:630353554308:web:bb56e670fc00b386344bd1"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const animalform = document.getElementById("form-animal");
+        const animalForm = document.getElementById("form-animal");
         const animalTableBody = document.getElementById("animal-table").getElementsByTagName("tbody")[0];
 
         // Cargar los datos existentes al cargar la página
         window.addEventListener('DOMContentLoaded', async () => {
             const querySnapshot = await getDocs(collection(db, "animales"));
             querySnapshot.forEach((doc) => {
-                addAnimalToTable(doc.data());
+                addAnimalToTable(doc.data(), doc.id);
             });
         });
 
-        animalform.addEventListener("submit", async (e) => {
+        animalForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
+            const id = animalForm.id.value;
             const newAnimal = {
-                nombre: animalform.nombre.value,
-                especie: animalform.especie.value,
-                edad: animalform.edad.value,
-                habitat: animalform.habitat.value,
-                dieta: animalform.dieta.value,
-                comportamiento: animalform.comportamiento.value,
-                altura: animalform.altura.value,
-                peso: animalform.peso.value,
-                color: animalform.color.value,
-                fecha_ingreso: animalform.fecha_ingreso.value
+                nombre: animalForm.nombre.value,
+                especie: animalForm.especie.value,
+                edad: animalForm.edad.value,
+                habitat: animalForm.habitat.value,
+                dieta: animalForm.dieta.value,
+                comportamiento: animalForm.comportamiento.value,
+                altura: animalForm.altura.value,
+                peso: animalForm.peso.value,
+                color: animalForm.color.value,
+                fecha_ingreso: animalForm.fecha_ingreso.value
             };
 
-            await addDoc(collection(db, "animales"), newAnimal);
-            addAnimalToTable(newAnimal);
-            animalform.reset();
+            if (id === "") {
+                const docRef = await addDoc(collection(db, "animales"), newAnimal);
+                addAnimalToTable(newAnimal, docRef.id);
+            } else {
+                const docRef = doc(db, "animales", id);
+                await updateDoc(docRef, newAnimal);
+                updateAnimalInTable(newAnimal, id);
+            }
+
+            animalForm.reset();
         });
 
-        function addAnimalToTable(animal) {
+        function addAnimalToTable(animal, id) {
             const row = animalTableBody.insertRow();
+            row.setAttribute('data-id', id);
 
             const cellNombre = row.insertCell(0);
             const cellEspecie = row.insertCell(1);
@@ -162,6 +187,7 @@
             const cellPeso = row.insertCell(7);
             const cellColor = row.insertCell(8);
             const cellFechaIngreso = row.insertCell(9);
+            const cellAcciones = row.insertCell(10);
 
             cellNombre.textContent = animal.nombre;
             cellEspecie.textContent = animal.especie;
@@ -173,6 +199,55 @@
             cellPeso.textContent = animal.peso;
             cellColor.textContent = animal.color;
             cellFechaIngreso.textContent = animal.fecha_ingreso;
+
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Editar';
+            editButton.classList.add('edit-button');
+            editButton.onclick = () => editAnimal(animal, id);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.classList.add('delete-button');
+            deleteButton.onclick = () => deleteAnimal(id);
+
+            cellAcciones.appendChild(editButton);
+            cellAcciones.appendChild(deleteButton);
+        }
+
+        function updateAnimalInTable(animal, id) {
+            const row = animalTableBody.querySelector(`[data-id='${id}']`);
+
+            row.cells[0].textContent = animal.nombre;
+            row.cells[1].textContent = animal.especie;
+            row.cells[2].textContent = animal.edad;
+            row.cells[3].textContent = animal.habitat;
+            row.cells[4].textContent = animal.dieta;
+            row.cells[5].textContent = animal.comportamiento;
+            row.cells[6].textContent = animal.altura;
+            row.cells[7].textContent = animal.peso;
+            row.cells[8].textContent = animal.color;
+            row.cells[9].textContent = animal.fecha_ingreso;
+        }
+
+        function editAnimal(animal, id) {
+            animalForm.id.value = id;
+            animalForm.nombre.value = animal.nombre;
+            animalForm.especie.value = animal.especie;
+            animalForm.edad.value = animal.edad;
+            animalForm.habitat.value = animal.habitat;
+            animalForm.dieta.value = animal.dieta;
+            animalForm.comportamiento.value = animal.comportamiento;
+            animalForm.altura.value = animal.altura;
+            animalForm.peso.value = animal.peso;
+            animalForm.color.value = animal.color;
+            animalForm.fecha_ingreso.value = animal.fecha_ingreso;
+        }
+
+        async function deleteAnimal(id) {
+            const docRef = doc(db, "animales", id);
+            await deleteDoc(docRef);
+            const row = animalTableBody.querySelector(`[data-id='${id}']`);
+            row.remove();
         }
     </script>
 </body>
