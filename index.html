@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             margin: 0;
@@ -20,6 +20,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
+            margin-bottom: 20px;
         }
         #form-animal h1 {
             text-align: center;
@@ -48,6 +49,17 @@
         #form-animal button:hover {
             background-color: #45a049;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #cccccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -65,6 +77,26 @@
         <input type="text" id="fecha_ingreso" placeholder="Ingresar el código del producto">    
         <button type="submit">Agregar</button>
     </form>
+
+    <table id="animal-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Especie</th>
+                <th>Edad</th>
+                <th>Hábitat</th>
+                <th>Dieta</th>
+                <th>Comportamiento</th>
+                <th>Altura</th>
+                <th>Peso</th>
+                <th>Color</th>
+                <th>Fecha de Ingreso</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Las filas se agregarán aquí dinámicamente -->
+        </tbody>
+    </table>
 
     <script type="module">
         // Import the functions you need from the SDKs you need
@@ -86,9 +118,12 @@
         const db = getFirestore(app);
 
         const animalform = document.getElementById("form-animal");
+        const animalTableBody = document.getElementById("animal-table").getElementsByTagName("tbody")[0];
+
         animalform.addEventListener("submit", async (e) => {
             e.preventDefault();
-            await addDoc(collection(db, "animales"), {
+
+            const newAnimal = {
                 nombre: animalform.nombre.value,
                 especie: animalform.especie.value,
                 edad: animalform.edad.value,
@@ -99,9 +134,38 @@
                 peso: animalform.peso.value,
                 color: animalform.color.value,
                 fecha_ingreso: animalform.fecha_ingreso.value
-            });
+            };
+
+            await addDoc(collection(db, "animales"), newAnimal);
+            addAnimalToTable(newAnimal);
             animalform.reset();
         });
+
+        function addAnimalToTable(animal) {
+            const row = animalTableBody.insertRow();
+
+            const cellNombre = row.insertCell(0);
+            const cellEspecie = row.insertCell(1);
+            const cellEdad = row.insertCell(2);
+            const cellHabitat = row.insertCell(3);
+            const cellDieta = row.insertCell(4);
+            const cellComportamiento = row.insertCell(5);
+            const cellAltura = row.insertCell(6);
+            const cellPeso = row.insertCell(7);
+            const cellColor = row.insertCell(8);
+            const cellFechaIngreso = row.insertCell(9);
+
+            cellNombre.textContent = animal.nombre;
+            cellEspecie.textContent = animal.especie;
+            cellEdad.textContent = animal.edad;
+            cellHabitat.textContent = animal.habitat;
+            cellDieta.textContent = animal.dieta;
+            cellComportamiento.textContent = animal.comportamiento;
+            cellAltura.textContent = animal.altura;
+            cellPeso.textContent = animal.peso;
+            cellColor.textContent = animal.color;
+            cellFechaIngreso.textContent = animal.fecha_ingreso;
+        }
     </script>
 </body>
 </html>
