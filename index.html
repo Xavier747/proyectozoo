@@ -49,6 +49,13 @@
         #form-animal button:hover {
             background-color: #45a049;
         }
+        #form-animal .update {
+            display: none;
+            background-color: #2196F3;
+        }
+        #form-animal .update:hover {
+            background-color: #1976D2;
+        }
         .animal-list {
             width: 80%;
             max-width: 600px;
@@ -91,7 +98,8 @@
         <input type="text" id="peso" placeholder="Ingrese el peso del animal">
         <input type="text" id="color" placeholder="Ingrese el color del animal">
         <input type="text" id="fecha_ingreso" placeholder="Ingresar el código del producto">    
-        <button type="submit">Agregar</button>
+        <button type="submit" class="add">Agregar</button>
+        <button type="button" class="update">Actualizar</button>
     </form>
     
     <div class="animal-list" id="animal-list">
@@ -120,10 +128,30 @@
         let editing = false;
         let animalId = "";
 
-        // Función para agregar o actualizar animal
+        // Función para agregar animal
         animalform.addEventListener("submit", async (e) => {
             e.preventDefault();
-            const animalData = {
+            if (!editing) {
+                await addDoc(collection(db, "animales"), {
+                    nombre: animalform.nombre.value,
+                    especie: animalform.especie.value,
+                    edad: animalform.edad.value,
+                    habitat: animalform.habitat.value,
+                    dieta: animalform.dieta.value,
+                    comportamiento: animalform.comportamiento.value,
+                    altura: animalform.altura.value,
+                    peso: animalform.peso.value,
+                    color: animalform.color.value,
+                    fecha_ingreso: animalform.fecha_ingreso.value
+                });
+                animalform.reset();
+            }
+        });
+
+        // Función para actualizar animal
+        document.querySelector(".update").addEventListener("click", async () => {
+            const animalRef = doc(db, "animales", animalId);
+            await updateDoc(animalRef, {
                 nombre: animalform.nombre.value,
                 especie: animalform.especie.value,
                 edad: animalform.edad.value,
@@ -134,16 +162,11 @@
                 peso: animalform.peso.value,
                 color: animalform.color.value,
                 fecha_ingreso: animalform.fecha_ingreso.value
-            };
-
-            if (!editing) {
-                await addDoc(collection(db, "animales"), animalData);
-            } else {
-                const animalRef = doc(db, "animales", animalId);
-                await updateDoc(animalRef, animalData);
-                editing = false;
-                animalform.querySelector('button[type="submit"]').textContent = "Agregar";
-            }
+            });
+            editing = false;
+            animalId = "";
+            animalform.querySelector(".add").style.display = "block";
+            animalform.querySelector(".update").style.display = "none";
             animalform.reset();
         });
 
@@ -236,7 +259,8 @@
 
                 animalId = id;
                 editing = true;
-                animalform.querySelector('button[type="submit"]').textContent = "Actualizar";
+                animalform.querySelector(".add").style.display = "none";
+                animalform.querySelector(".update").style.display = "block";
             }
         };
 
