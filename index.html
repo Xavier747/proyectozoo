@@ -3,26 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Formulario de Zoologico</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #form-product {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        #form-product h1 {
+            text-align: center;
+            color: #333333;
+        }
+        #form-product input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #form-product button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #form-product button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>FORMULARIO</h1>
-    <form action="insert"> <input type="text" id="nombre" placeholder="Ingrese el nombre del animal">
-    <form action="insert"> <input type="text" id="especie" placeholder="Ingrese la especie del animal">
-    <form action="insert"> <input type="text" id="edad" placeholder="Ingrese la edad del animal">
-    <form action="insert"> <input type="text" id="habitat" placeholder="Ingrese el hábitat del animal">
-    <form action="insert"> <input type="text" id="dieta" placeholder="Ingrese la dieta del animal">
-    <form action="insert"> <input type="text" id="comportamiento" placeholder="Ingrese el comportamiento del animal">
-    <form action="insert"> <input type="text" id="altura" placeholder="Ingrese la altura del animal">
-    <form action="insert"> <input type="text" id="peso" placeholder="Ingrese el peso del animal">
-    <form action="insert"> <input type="text" id="color" placeholder="Ingrese el color del animal">
-    <form action="insert"> <input type="text" id="fecha_ingreso" placeholder="ingresar el codigo del producto">    
-    
-    <h1>hola</h1>
+    <form id="form-product">
+        <h1>FORMULARIO ZOOLOGICO</h1>
+        <input type="text" id="nombre" placeholder="Ingrese el nombre del animal">
+        <input type="text" id="especie" placeholder="Ingrese la especie del animal">
+        <input type="text" id="edad" placeholder="Ingrese la edad del animal">
+        <input type="text" id="habitat" placeholder="Ingrese el hábitat del animal">
+        <input type="text" id="dieta" placeholder="Ingrese la dieta del animal">
+        <input type="text" id="comportamiento" placeholder="Ingrese el comportamiento del animal">
+        <input type="text" id="altura" placeholder="Ingrese la altura del animal">
+        <input type="text" id="peso" placeholder="Ingrese el peso del animal">
+        <input type="text" id="color" placeholder="Ingrese el color del animal">
+        <input type="text" id="fecha_ingreso" placeholder="Ingresar el código del producto">    
+        <button type="submit">Agregar producto</button>
     </form>
-
-
-    
-    
 </body>
 </html>
