@@ -141,6 +141,18 @@
             display: none;
         }
 
+        .google-btn {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+        }
+
         @media screen and (max-width: 850px) {
             main {
                 margin-top: 50px;
@@ -192,6 +204,7 @@
                     <input type="email" id="login-email" placeholder="Correo Electrónico">
                     <input type="password" id="login-password" placeholder="Contraseña">
                     <button type="submit">Entrar</button>
+                    <button type="button" class="google-btn" id="google-login">Iniciar sesión con Google</button>
                 </form>
 
                 <form class="formulario__register">
@@ -200,6 +213,7 @@
                     <input type="email" id="register-email" placeholder="Correo Electrónico">
                     <input type="password" id="register-password" placeholder="Contraseña">
                     <button type="submit">Regístrarse</button>
+                    <button type="button" class="google-btn" id="google-register">Registrarse con Google</button>
                 </form>
             </div>
         </div>
@@ -208,7 +222,7 @@
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-      import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+      import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
       // Your web app's Firebase configuration
       const firebaseConfig = {
@@ -223,6 +237,7 @@
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
 
       document.getElementById("btn__iniciar-sesion").addEventListener("click", iniciarSesion);
       document.getElementById("btn__registrarse").addEventListener("click", register);
@@ -308,6 +323,28 @@
               .catch(error => {
                   console.error(error);
                   alert('Error al registrarse: ' + error.message);
+              });
+      });
+
+      document.getElementById('google-login').addEventListener('click', function() {
+          signInWithPopup(auth, provider)
+              .then((result) => {
+                  window.location.href = 'inicio.html';
+              })
+              .catch((error) => {
+                  console.error(error);
+                  alert('Error al iniciar sesión con Google: ' + error.message);
+              });
+      });
+
+      document.getElementById('google-register').addEventListener('click', function() {
+          signInWithPopup(auth, provider)
+              .then((result) => {
+                  window.location.href = 'index.html';
+              })
+              .catch((error) => {
+                  console.error(error);
+                  alert('Error al registrarse con Google: ' + error.message);
               });
       });
     </script>
