@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login y Registro</title>
     <style>
+        /* Tu estilo CSS aquí */
         * {
             margin: 0;
             padding: 0;
@@ -185,99 +186,130 @@
                 </div>
             </div>
 
-            <!--Formulario de Login y registro-->
             <div class="contenedor__login-register">
-                <!--Login-->
                 <form class="formulario__login">
                     <h2>Iniciar Sesión</h2>
-                    <input type="text" placeholder="Correo Electrónico">
-                    <input type="password" placeholder="Contraseña">
+                    <input type="email" id="login-email" placeholder="Correo Electrónico">
+                    <input type="password" id="login-password" placeholder="Contraseña">
                     <button type="submit">Entrar</button>
                 </form>
 
-                <!--Register-->
                 <form class="formulario__register">
                     <h2>Regístrarse</h2>
-                    <input type="text" placeholder="Nombre completo">
-                    <input type="text" placeholder="Correo Electrónico">
-                    <input type="text" placeholder="Usuario">
-                    <input type="password" placeholder="Contraseña">
+                    <input type="text" id="register-name" placeholder="Nombre completo">
+                    <input type="email" id="register-email" placeholder="Correo Electrónico">
+                    <input type="password" id="register-password" placeholder="Contraseña">
                     <button type="submit">Regístrarse</button>
                 </form>
             </div>
         </div>
     </main>
 
-    <script>
-        document.getElementById("btn__iniciar-sesion").addEventListener("click", iniciarSesion);
-        document.getElementById("btn__registrarse").addEventListener("click", register);
-        window.addEventListener("resize", anchoPage);
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+      import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
-        var formulario_login = document.querySelector(".formulario__login");
-        var formulario_register = document.querySelector(".formulario__register");
-        var contenedor_login_register = document.querySelector(".contenedor__login-register");
-        var caja_trasera_login = document.querySelector(".caja__trasera-login");
-        var caja_trasera_register = document.querySelector(".caja__trasera-register");
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
+        authDomain: "zoologico-ea4c2.firebaseapp.com",
+        projectId: "zoologico-ea4c2",
+        storageBucket: "zoologico-ea4c2.appspot.com",
+        messagingSenderId: "630353554308",
+        appId: "1:630353554308:web:4ccc539ed3ffa831344bd1"
+      };
 
-        function anchoPage() {
-            if (window.innerWidth > 850) {
-                caja_trasera_register.style.display = "block";
-                caja_trasera_login.style.display = "block";
-            } else {
-                caja_trasera_register.style.display = "block";
-                caja_trasera_register.style.opacity = "1";
-                caja_trasera_login.style.display = "none";
-                formulario_login.style.display = "block";
-                contenedor_login_register.style.left = "0px";
-                formulario_register.style.display = "none";
-            }
-        }
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
 
-        anchoPage();
+      document.getElementById("btn__iniciar-sesion").addEventListener("click", iniciarSesion);
+      document.getElementById("btn__registrarse").addEventListener("click", register);
+      window.addEventListener("resize", anchoPage);
 
-        function iniciarSesion() {
-            if (window.innerWidth > 850) {
-                formulario_login.style.display = "block";
-                contenedor_login_register.style.left = "10px";
-                formulario_register.style.display = "none";
-                caja_trasera_register.style.opacity = "1";
-                caja_trasera_login.style.opacity = "0";
-            } else {
-                formulario_login.style.display = "block";
-                contenedor_login_register.style.left = "0px";
-                formulario_register.style.display = "none";
-                caja_trasera_register.style.display = "block";
-                caja_trasera_login.style.display = "none";
-            }
-        }
+      var formulario_login = document.querySelector(".formulario__login");
+      var formulario_register = document.querySelector(".formulario__register");
+      var contenedor_login_register = document.querySelector(".contenedor__login-register");
+      var caja_trasera_login = document.querySelector(".caja__trasera-login");
+      var caja_trasera_register = document.querySelector(".caja__trasera-register");
 
-        function register() {
-            if (window.innerWidth > 850) {
-                formulario_register.style.display = "block";
-                contenedor_login_register.style.left = "410px";
-                formulario_login.style.display = "none";
-                caja_trasera_register.style.opacity = "0";
-                caja_trasera_login.style.opacity = "1";
-            } else {
-                formulario_register.style.display = "block";
-                contenedor_login_register.style.left = "0px";
-                formulario_login.style.display = "none";
-                caja_trasera_register.style.display = "none";
-                caja_trasera_login.style.display = "block";
-                caja_trasera_login.style.opacity = "1";
-            }
-        }
+      function anchoPage() {
+          if (window.innerWidth > 850) {
+              caja_trasera_register.style.display = "block";
+              caja_trasera_login.style.display = "block";
+          } else {
+              caja_trasera_register.style.display = "block";
+              caja_trasera_register.style.opacity = "1";
+              caja_trasera_login.style.display = "none";
+              formulario_login.style.display = "block";
+              contenedor_login_register.style.left = "0px";
+              formulario_register.style.display = "none";
+          }
+      }
 
-        // Añadir eventos para manejar el envío del formulario y redirigir al index.html
-        document.querySelector('.formulario__login').addEventListener('submit', function(event) {
-            event.preventDefault();
-            window.location.href = 'inicio.html';
-        });
+      anchoPage();
 
-        document.querySelector('.formulario__register').addEventListener('submit', function(event) {
-            event.preventDefault();
-            window.location.href = 'index.html';
-        });
+      function iniciarSesion() {
+          if (window.innerWidth > 850) {
+              formulario_login.style.display = "block";
+              contenedor_login_register.style.left = "10px";
+              formulario_register.style.display = "none";
+              caja_trasera_register.style.opacity = "1";
+              caja_trasera_login.style.opacity = "0";
+          } else {
+              formulario_login.style.display = "block";
+              contenedor_login_register.style.left = "0px";
+              formulario_register.style.display = "none";
+              caja_trasera_register.style.display = "block";
+              caja_trasera_login.style.display = "none";
+          }
+      }
+
+      function register() {
+          if (window.innerWidth > 850) {
+              formulario_register.style.display = "block";
+              contenedor_login_register.style.left = "410px";
+              formulario_login.style.display = "none";
+              caja_trasera_register.style.opacity = "0";
+              caja_trasera_login.style.opacity = "1";
+          } else {
+              formulario_register.style.display = "block";
+              contenedor_login_register.style.left = "0px";
+              formulario_login.style.display = "none";
+              caja_trasera_register.style.display = "none";
+              caja_trasera_login.style.display = "block";
+              caja_trasera_login.style.opacity = "1";
+          }
+      }
+
+      document.querySelector('.formulario__login').addEventListener('submit', function(event) {
+          event.preventDefault();
+          const email = document.getElementById('login-email').value;
+          const password = document.getElementById('login-password').value;
+          signInWithEmailAndPassword(auth, email, password)
+              .then(userCredential => {
+                  window.location.href = 'inicio.html';
+              })
+              .catch(error => {
+                  console.error(error);
+                  alert('Error al iniciar sesión: ' + error.message);
+              });
+      });
+
+      document.querySelector('.formulario__register').addEventListener('submit', function(event) {
+          event.preventDefault();
+          const email = document.getElementById('register-email').value;
+          const password = document.getElementById('register-password').value;
+          createUserWithEmailAndPassword(auth, email, password)
+              .then(userCredential => {
+                  window.location.href = 'index.html';
+              })
+              .catch(error => {
+                  console.error(error);
+                  alert('Error al registrarse: ' + error.message);
+              });
+      });
     </script>
 </body>
 </html>
