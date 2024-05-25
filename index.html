@@ -3,260 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Zoológico</title>
+    <title>Login y Registro</title>
     <style>
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+            font-family: 'Roboto', sans-serif;
+        }
 
         body {
-            font-family: Arial, sans-serif;
-            background: url('https://img.freepik.com/vector-gratis/fondo-verde-acuarela-flores_23-2148881840.jpg') no-repeat center center fixed;
+            background-image: url(../images/bg4.jpg);
             background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            width: 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
         }
-        #form-animal {
-            background-color: #050505;
+
+        main {
+            width: 100%;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(135, 66, 66, 0.1);
-            width: 300px;
-            margin-bottom: 20px;
+            margin: auto;
+            margin-top: 100px;
         }
-        #form-animal h1 {
-            text-align: center;
-            color: #333333;
-        }
-        #form-animal input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #cccccc;
-            border-radius: 4px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        #form-animal button {
+
+        .contenedor__todo {
             width: 100%;
-            padding: 10px;
-            background-color: #636b63;
-            border: none;
-            border-radius: 4px;
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+        }
+
+        .caja__trasera {
+            width: 100%;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            background-color: rgba(0, 128, 255, 0.5);
+        }
+
+        .caja__trasera div {
+            margin: 100px 40px;
             color: white;
+            transition: all 500ms;
+        }
+
+        .caja__trasera div p,
+        .caja__trasera button {
+            margin-top: 30px;
+        }
+
+        .caja__trasera div h3 {
+            font-weight: 400;
+            font-size: 26px;
+        }
+
+        .caja__trasera div p {
             font-size: 16px;
+            font-weight: 300;
+        }
+
+        .caja__trasera button {
+            padding: 10px 40px;
+            border: 2px solid #fff;
+            font-size: 14px;
+            background: transparent;
+            font-weight: 600;
             cursor: pointer;
+            color: white;
+            outline: none;
+            transition: all 300ms;
         }
-        #form-animal button:hover {
-            background-color: #505450;
+
+        .caja__trasera button:hover {
+            background: #fff;
+            color: #46A2FD;
         }
-        #form-animal .update-btn {
-            background-color: #2f0c8d;
+
+        .contenedor__login-register {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 380px;
+            position: relative;
+            top: -185px;
+            left: 10px;
+            transition: left 500ms cubic-bezier(0.175, 0.885, 0.320, 1.275);
+        }
+
+        .contenedor__login-register form {
+            width: 100%;
+            padding: 80px 20px;
+            background: white;
+            position: absolute;
+            border-radius: 20px;
+        }
+
+        .contenedor__login-register form h2 {
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #46A2FD;
+        }
+
+        .contenedor__login-register form input {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            background: #F2F2F2;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .contenedor__login-register form button {
+            padding: 10px 40px;
+            margin-top: 40px;
+            border: none;
+            font-size: 14px;
+            background: #46A2FD;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            outline: none;
+        }
+
+        .formulario__login {
+            opacity: 1;
+            display: block;
+        }
+
+        .formulario__register {
             display: none;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #636b63;
-        }
-        table, th, td {
-            border: 1px solid #205ab8;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
+
+        @media screen and (max-width: 850px) {
+            main {
+                margin-top: 50px;
+            }
+
+            .caja__trasera {
+                max-width: 350px;
+                height: 300px;
+                flex-direction: column;
+                margin: auto;
+            }
+
+            .caja__trasera div {
+                margin: 0px;
+                position: absolute;
+            }
+
+            .contenedor__login-register {
+                top: -10px;
+                left: -5px;
+                margin: auto;
+            }
+
+            .contenedor__login-register form {
+                position: relative;
+            }
         }
     </style>
 </head>
 <body>
-    <form id="form-animal">
-        <h1>FORMULARIO ZOOLÓGICO</h1>
-        <input type="text" id="nombre" placeholder="Ingrese el nombre del animal">
-        <input type="text" id="especie" placeholder="Ingrese la especie del animal">
-        <input type="text" id="edad" placeholder="Ingrese la edad mínima de vida del animal">
-        <input type="text" id="habitat" placeholder="Ingrese el hábitat del animal">
-        <input type="text" id="dieta" placeholder="Ingrese la dieta del animal">
-        <input type="text" id="comportamiento" placeholder="Ingrese el comportamiento del animal">
-        <input type="text" id="altura" placeholder="Ingrese la altura del animal">
-        <input type="text" id="peso" placeholder="Ingrese el peso del animal">
-        <input type="text" id="color" placeholder="Ingrese el color del animal">
-        <input type="text" id="fecha_ingreso" placeholder="Ingrese la fecha de ingreso del animal">    
-        <button type="submit">Agregar</button>
-        <button type="button" class="update-btn">Actualizar</button>
-    </form>
+    <main>
+        <div class="contenedor__todo">
+            <div class="caja__trasera">
+                <div class="caja__trasera-login">
+                    <h3>¿Ya tienes una cuenta?</h3>
+                    <p>Inicia sesión para entrar en la página</p>
+                    <button id="btn__iniciar-sesion">Iniciar Sesión</button>
+                </div>
+                <div class="caja__trasera-register">
+                    <h3>¿Aún no tienes una cuenta?</h3>
+                    <p>Regístrate para que puedas iniciar sesión</p>
+                    <button id="btn__registrarse">Regístrarse</button>
+                </div>
+            </div>
 
-    <table id="animal-table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Especie</th>
-                <th>Edad</th>
-                <th>Hábitat</th>
-                <th>Dieta</th>
-                <th>Comportamiento</th>
-                <th>Altura</th>
-                <th>Peso</th>
-                <th>Color</th>
-                <th>Fecha de Ingreso</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Las filas se agregarán aquí dinámicamente -->
-        </tbody>
-    </table>
+            <!--Formulario de Login y registro-->
+            <div class="contenedor__login-register">
+                <!--Login-->
+                <form class="formulario__login">
+                    <h2>Iniciar Sesión</h2>
+                    <input type="text" placeholder="Correo Electrónico">
+                    <input type="password" placeholder="Contraseña">
+                    <button type="submit">Entrar</button>
+                </form>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+                <!--Register-->
+                <form class="formulario__register">
+                    <h2>Regístrarse</h2>
+                    <input type="text" placeholder="Nombre completo">
+                    <input type="text" placeholder="Correo Electrónico">
+                    <input type="text" placeholder="Usuario">
+                    <input type="password" placeholder="Contraseña">
+                    <button type="submit">Regístrarse</button>
+                </form>
+            </div>
+        </div>
+    </main>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
-            authDomain: "zoologico-ea4c2.firebaseapp.com",
-            projectId: "zoologico-ea4c2",
-            storageBucket: "zoologico-ea4c2.appspot.com",
-            messagingSenderId: "630353554308",
-            appId: "1:630353554308:web:bb56e670fc00b386344bd1"
-        };
+    <script>
+        document.getElementById("btn__iniciar-sesion").addEventListener("click", iniciarSesion);
+        document.getElementById("btn__registrarse").addEventListener("click", register);
+        window.addEventListener("resize", anchoPage);
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        var formulario_login = document.querySelector(".formulario__login");
+        var formulario_register = document.querySelector(".formulario__register");
+        var contenedor_login_register = document.querySelector(".contenedor__login-register");
+        var caja_trasera_login = document.querySelector(".caja__trasera-login");
+        var caja_trasera_register = document.querySelector(".caja__trasera-register");
 
-        const animalform = document.getElementById("form-animal");
-        const animalTableBody = document.getElementById("animal-table").getElementsByTagName("tbody")[0];
-        let currentAnimalId = null;
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            const querySnapshot = await getDocs(collection(db, "animales"));
-            querySnapshot.forEach((doc) => {
-                addAnimalToTable(doc.id, doc.data());
-            });
-        });
-
-        animalform.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const newAnimal = {
-                nombre: animalform.nombre.value,
-                especie: animalform.especie.value,
-                edad: animalform.edad.value,
-                habitat: animalform.habitat.value,
-                dieta: animalform.dieta.value,
-                comportamiento: animalform.comportamiento.value,
-                altura: animalform.altura.value,
-                peso: animalform.peso.value,
-                color: animalform.color.value,
-                fecha_ingreso: animalform.fecha_ingreso.value
-            };
-
-            const docRef = await addDoc(collection(db, "animales"), newAnimal);
-            addAnimalToTable(docRef.id, newAnimal);
-            animalform.reset();
-        });
-
-        document.querySelector('.update-btn').addEventListener('click', async () => {
-            if (currentAnimalId) {
-                const updatedAnimal = {
-                    nombre: animalform.nombre.value,
-                    especie: animalform.especie.value,
-                    edad: animalform.edad.value,
-                    habitat: animalform.habitat.value,
-                    dieta: animalform.dieta.value,
-                    comportamiento: animalform.comportamiento.value,
-                    altura: animalform.altura.value,
-                    peso: animalform.peso.value,
-                    color: animalform.color.value,
-                    fecha_ingreso: animalform.fecha_ingreso.value
-                };
-
-                const docRef = doc(db, "animales", currentAnimalId);
-                await updateDoc(docRef, updatedAnimal);
-
-                const row = document.getElementById(currentAnimalId);
-                updateTableRow(row, updatedAnimal);
-
-                animalform.reset();
-                currentAnimalId = null;
-                document.querySelector('.update-btn').style.display = 'none';
-                animalform.querySelector('button[type="submit"]').style.display = 'block';
+        function anchoPage() {
+            if (window.innerWidth > 850) {
+                caja_trasera_register.style.display = "block";
+                caja_trasera_login.style.display = "block";
+            } else {
+                caja_trasera_register.style.display = "block";
+                caja_trasera_register.style.opacity = "1";
+                caja_trasera_login.style.display = "none";
+                formulario_login.style.display = "block";
+                contenedor_login_register.style.left = "0px";
+                formulario_register.style.display = "none";
             }
+        }
+
+        anchoPage();
+
+        function iniciarSesion() {
+            if (window.innerWidth > 850) {
+                formulario_login.style.display = "block";
+                contenedor_login_register.style.left = "10px";
+                formulario_register.style.display = "none";
+                caja_trasera_register.style.opacity = "1";
+                caja_trasera_login.style.opacity = "0";
+            } else {
+                formulario_login.style.display = "block";
+                contenedor_login_register.style.left = "0px";
+                formulario_register.style.display = "none";
+                caja_trasera_register.style.display = "block";
+                caja_trasera_login.style.display = "none";
+            }
+        }
+
+        function register() {
+            if (window.innerWidth > 850) {
+                formulario_register.style.display = "block";
+                contenedor_login_register.style.left = "410px";
+                formulario_login.style.display = "none";
+                caja_trasera_register.style.opacity = "0";
+                caja_trasera_login.style.opacity = "1";
+            } else {
+                formulario_register.style.display = "block";
+                contenedor_login_register.style.left = "0px";
+                formulario_login.style.display = "none";
+                caja_trasera_register.style.display = "none";
+                caja_trasera_login.style.display = "block";
+                caja_trasera_login.style.opacity = "1";
+            }
+        }
+
+        // Añadir eventos para manejar el envío del formulario y redirigir al index.html
+        document.querySelector('.formulario__login').addEventListener('submit', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
         });
 
-        function addAnimalToTable(id, animal) {
-            const row = animalTableBody.insertRow();
-            row.id = id;
-
-            const cellNombre = row.insertCell(0);
-            const cellEspecie = row.insertCell(1);
-            const cellEdad = row.insertCell(2);
-            const cellHabitat = row.insertCell(3);
-            const cellDieta = row.insertCell(4);
-            const cellComportamiento = row.insertCell(5);
-            const cellAltura = row.insertCell(6);
-            const cellPeso = row.insertCell(7);
-            const cellColor = row.insertCell(8);
-            const cellFechaIngreso = row.insertCell(9);
-            const cellAcciones = row.insertCell(10);
-
-            cellNombre.textContent = animal.nombre;
-            cellEspecie.textContent = animal.especie;
-            cellEdad.textContent = animal.edad;
-            cellHabitat.textContent = animal.habitat;
-            cellDieta.textContent = animal.dieta;
-            cellComportamiento.textContent = animal.comportamiento;
-            cellAltura.textContent = animal.altura;
-            cellPeso.textContent = animal.peso;
-            cellColor.textContent = animal.color;
-            cellFechaIngreso.textContent = animal.fecha_ingreso;
-
-            const verButton = document.createElement("button");
-            verButton.textContent = "Ver";
-            verButton.addEventListener("click", () => showAnimalDetails(id, animal));
-            cellAcciones.appendChild(verButton);
-
-            const eliminarButton = document.createElement("button");
-            eliminarButton.textContent = "Eliminar";
-            eliminarButton.addEventListener("click", () => deleteAnimal(id, row));
-            cellAcciones.appendChild(eliminarButton);
-        }
-
-        function updateTableRow(row, animal) {
-            row.cells[0].textContent = animal.nombre;
-            row.cells[1].textContent = animal.especie;
-            row.cells[2].textContent = animal.edad;
-            row.cells[3].textContent = animal.habitat;
-            row.cells[4].textContent = animal.dieta;
-            row.cells[5].textContent = animal.comportamiento;
-            row.cells[6].textContent = animal.altura;
-            row.cells[7].textContent = animal.peso;
-            row.cells[8].textContent = animal.color;
-            row.cells[9].textContent = animal.fecha_ingreso;
-        }
-
-        function showAnimalDetails(id, animal) {
-            currentAnimalId = id;
-            animalform.nombre.value = animal.nombre;
-            animalform.especie.value = animal.especie;
-            animalform.edad.value = animal.edad;
-            animalform.habitat.value = animal.habitat;
-            animalform.dieta.value = animal.dieta;
-            animalform.comportamiento.value = animal.comportamiento;
-            animalform.altura.value = animal.altura;
-            animalform.peso.value = animal.peso;
-            animalform.color.value = animal.color;
-            animalform.fecha_ingreso.value = animal.fecha_ingreso;
-
-            document.querySelector('.update-btn').style.display = 'block';
-            animalform.querySelector('button[type="submit"]').style.display = 'none';
-        }
-
-        async function deleteAnimal(id, row) {
-            await deleteDoc(doc(db, "animales", id));
-            row.remove();
-        }
+        document.querySelector('.formulario__register').addEventListener('submit', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
     </script>
 </body>
 </html>
