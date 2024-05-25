@@ -80,6 +80,13 @@
             font-weight: 600;
             outline: none;
         }
+
+        .error-message {
+            color: red;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -91,54 +98,71 @@
                 <input type="password" id="login-password" placeholder="Contraseña" required>
                 <button type="submit">Entrar</button>
                 <button type="button" class="google-btn" id="google-login">Iniciar sesión con Google</button>
+                <div class="error-message" id="error-message">Error al iniciar sesión</div>
             </form>
         </div>
     </main>
 
     <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-      import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
-        authDomain: "zoologico-ea4c2.firebaseapp.com",
-        projectId: "zoologico-ea4c2",
-        storageBucket: "zoologico-ea4c2.appspot.com",
-        messagingSenderId: "630353554308",
-        appId: "1:630353554308:web:4ccc539ed3ffa831344bd1"
-      };
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBfpromLwgJmU-i0G8nVkR6Mz4FVVal-qY",
+            authDomain: "zoologico-ea4c2.firebaseapp.com",
+            projectId: "zoologico-ea4c2",
+            storageBucket: "zoologico-ea4c2.appspot.com",
+            messagingSenderId: "630353554308",
+            appId: "1:630353554308:web:4ccc539ed3ffa831344bd1"
+        };
 
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const provider = new GoogleAuthProvider();
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-      document.querySelector('.formulario__login').addEventListener('submit', function(event) {
-          event.preventDefault();
-          const email = document.getElementById('login-email').value;
-          const password = document.getElementById('login-password').value;
-          signInWithEmailAndPassword(auth, email, password)
-              .then(userCredential => {
-                  window.location.href = 'inicio.html';
-              })
-              .catch(error => {
-                  console.error(error);
-                  alert('Error al iniciar sesión: ' + error.message);
-              });
-      });
+        document.querySelector('.formulario__login').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            signInWithEmailAndPassword(auth, email, password)
+                .then(userCredential => {
+                    window.location.href = 'inicio.html';
+                })
+                .catch(error => {
+                    console.error(error);
+                    const errorMessage = document.getElementById('error-message');
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                            errorMessage.textContent = 'Usuario no encontrado';
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage.textContent = 'Contraseña incorrecta';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage.textContent = 'Correo electrónico inválido';
+                            break;
+                        default:
+                            errorMessage.textContent = 'Error al iniciar sesión: ' + error.message;
+                    }
+                    errorMessage.style.display = 'block';
+                });
+        });
 
-      document.getElementById('google-login').addEventListener('click', function() {
-          signInWithPopup(auth, provider)
-              .then((result) => {
-                  window.location.href = 'inicio.html';
-              })
-              .catch((error) => {
-                  console.error(error);
-                  alert('Error al iniciar sesión con Google: ' + error.message);
-              });
-      });
+        document.getElementById('google-login').addEventListener('click', function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    window.location.href = 'inicio.html';
+                })
+                .catch((error) => {
+                    console.error(error);
+                    const errorMessage = document.getElementById('error-message');
+                    errorMessage.textContent = 'Error al iniciar sesión con Google: ' + error.message;
+                    errorMessage.style.display = 'block';
+                });
+        });
     </script>
 </body>
 </html>
