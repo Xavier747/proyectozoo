@@ -132,7 +132,7 @@
                     window.location.href = 'inicio.html';
                 })
                 .catch(error => {
-                    console.error(error);
+                    console.error('Error al iniciar sesión:', error);
                     const errorMessage = document.getElementById('error-message');
                     switch (error.code) {
                         case 'auth/user-not-found':
@@ -157,7 +157,7 @@
                     window.location.href = 'inicio.html';
                 })
                 .catch((error) => {
-                    console.error(error);
+                    console.error('Error al iniciar sesión con Google:', error);
                     const errorMessage = document.getElementById('error-message');
                     errorMessage.textContent = 'Error al iniciar sesión con Google: ' + error.message;
                     errorMessage.style.display = 'block';
