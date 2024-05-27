@@ -213,7 +213,9 @@
             const password = document.getElementById('register-password').value;
             createUserWithEmailAndPassword(auth, email, password)
                 .then(userCredential => {
-                    window.location.href = 'inicio.html';
+                    document.getElementById('register-form').style.display = 'none';
+                    document.getElementById('login-form').style.display = 'block';
+                    alert('Registro exitoso, ahora puedes iniciar sesión.');
                 })
                 .catch(error => {
                     console.error('Error al registrarse:', error);
