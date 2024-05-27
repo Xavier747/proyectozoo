@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login y Registro</title>
     <style>
         /* Tu estilo CSS aquí */
         * {
@@ -87,18 +87,35 @@
             text-align: center;
             display: none;
         }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #46A2FD;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <main>
         <div class="contenedor__login-register">
-            <form class="formulario__login">
+            <form class="formulario__login" id="login-form">
                 <h2>Iniciar Sesión</h2>
                 <input type="email" id="login-email" placeholder="Correo Electrónico" required>
                 <input type="password" id="login-password" placeholder="Contraseña" required>
                 <button type="submit">Entrar</button>
                 <button type="button" class="google-btn" id="google-login">Iniciar sesión con Google</button>
-                <div class="error-message" id="error-message">Error al iniciar sesión</div>
+                <div class="error-message" id="login-error-message">Error al iniciar sesión</div>
+                <div class="toggle-form" id="show-register">¿No tienes cuenta? Regístrate aquí</div>
+            </form>
+
+            <form class="formulario__register" id="register-form" style="display: none;">
+                <h2>Registrarse</h2>
+                <input type="email" id="register-email" placeholder="Correo Electrónico" required>
+                <input type="password" id="register-password" placeholder="Contraseña" required>
+                <button type="submit">Registrarse</button>
+                <div class="error-message" id="register-error-message">Error al registrarse</div>
+                <div class="toggle-form" id="show-login">¿Ya tienes cuenta? Inicia sesión aquí</div>
             </form>
         </div>
     </main>
@@ -106,7 +123,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -123,7 +140,19 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        document.querySelector('.formulario__login').addEventListener('submit', function(event) {
+        // Toggle forms
+        document.getElementById('show-register').addEventListener('click', function() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        });
+
+        document.getElementById('show-login').addEventListener('click', function() {
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        });
+
+        // Login
+        document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
@@ -133,7 +162,7 @@
                 })
                 .catch(error => {
                     console.error('Error al iniciar sesión:', error);
-                    const errorMessage = document.getElementById('error-message');
+                    const errorMessage = document.getElementById('login-error-message');
                     switch (error.code) {
                         case 'auth/user-not-found':
                             errorMessage.textContent = 'Usuario no encontrado';
@@ -151,6 +180,7 @@
                 });
         });
 
+        // Google Login
         document.getElementById('google-login').addEventListener('click', function() {
             signInWithPopup(auth, provider)
                 .then((result) => {
@@ -158,8 +188,37 @@
                 })
                 .catch((error) => {
                     console.error('Error al iniciar sesión con Google:', error);
-                    const errorMessage = document.getElementById('error-message');
+                    const errorMessage = document.getElementById('login-error-message');
                     errorMessage.textContent = 'Error al iniciar sesión con Google: ' + error.message;
+                    errorMessage.style.display = 'block';
+                });
+        });
+
+        // Register
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(userCredential => {
+                    window.location.href = 'inicio.html';
+                })
+                .catch(error => {
+                    console.error('Error al registrarse:', error);
+                    const errorMessage = document.getElementById('register-error-message');
+                    switch (error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMessage.textContent = 'El correo electrónico ya está en uso';
+                            break;
+                        case 'auth/weak-password':
+                            errorMessage.textContent = 'La contraseña es demasiado débil';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage.textContent = 'Correo electrónico inválido';
+                            break;
+                        default:
+                            errorMessage.textContent = 'Error al registrarse: ' + error.message;
+                    }
                     errorMessage.style.display = 'block';
                 });
         });
